@@ -27,4 +27,16 @@
         <item name="android:layout_marginBottom">@dimen/dp_16</item>
         <item name="fabSize">normal</item>
     </style>
+
+    <style name="TextViewProfile">
+        <item name="android:textSize">@dimen/sp_18</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:gravity">center</item>
+    </style>
+    <style name="ButtonProfile">
+        <item name="android:padding">@dimen/dp_4</item>
+        <item name="android:background">@drawable/border_public_room</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
 </resources>
