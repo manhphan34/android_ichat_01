@@ -1,10 +1,13 @@
 package framgia.com.ichat.data.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Calendar;
 
-public class User {
+public class User implements Parcelable {
     private String mUid;
     private String mEmail;
     private String mPassword;
@@ -38,7 +41,39 @@ public class User {
         mLastSignIn = user.getMetadata().getLastSignInTimestamp();
         mIsOnline = isOnline;
     }
+    public User(Parcel in){
+        mUid = in.readString();
+        mEmail = in.readString();
+        mDisplayName = in.readString();
+        mPhotoUrl = in.readString();
+        mLastSignIn = in.readLong();
+    }
 
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel in) {
+            return new User(in);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mUid);
+        dest.writeString(mEmail);
+        dest.writeString(mDisplayName);
+        dest.writeString(mPhotoUrl);
+        dest.writeLong(mLastSignIn);
+    }
     public String getUid() {
         return mUid;
     }
@@ -94,6 +129,7 @@ public class User {
     public void setOnline(boolean online) {
         mIsOnline = online;
     }
+
     public class UserKey {
         public static final String USER_REFERENCE = "user";
     }

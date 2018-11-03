@@ -4,9 +4,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import framgia.com.ichat.data.model.User;
-import framgia.com.ichat.data.source.UserDataSouce;
+import framgia.com.ichat.data.source.UserDataSource;
 
-public class UserRemoteDataSource implements UserDataSouce.Remote {
+public class UserRemoteDataSource implements UserDataSource.Remote {
 
     private FirebaseDatabase mDatabase;
 

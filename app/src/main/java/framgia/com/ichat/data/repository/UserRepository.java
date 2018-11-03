@@ -2,12 +2,12 @@ package framgia.com.ichat.data.repository;
 
 import com.google.firebase.database.ValueEventListener;
 
-import framgia.com.ichat.data.source.UserDataSouce;
+import framgia.com.ichat.data.source.UserDataSource;
 
-public class UserRepository implements UserDataSouce.Remote {
-    private UserDataSouce.Remote mRemote;
+public class UserRepository implements UserDataSource.Remote {
+    private UserDataSource.Remote mRemote;
 
-    public UserRepository(UserDataSouce.Remote remote) {
+    public UserRepository(UserDataSource.Remote remote) {
         mRemote = remote;
     }
 
