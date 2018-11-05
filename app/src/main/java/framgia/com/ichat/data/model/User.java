@@ -16,13 +16,7 @@ public class User implements Parcelable {
     private long mLastSignIn;
     private boolean mIsOnline;
 
-    public User(FirebaseUser firebaseUser) {
-        mUid = firebaseUser.getUid();
-        mEmail = firebaseUser.getEmail();
-        mDisplayName = firebaseUser.getDisplayName();
-        mPhotoUrl = String.valueOf(firebaseUser.getPhotoUrl());
-        mLastSignIn = Calendar.getInstance().getTimeInMillis();
-        mIsOnline = true;
+    public User() {
     }
 
     public User(String email, String password) {
@@ -30,7 +24,22 @@ public class User implements Parcelable {
         mPassword = password;
     }
 
-    public User() {
+    public User(String uid, String email, String displayName, String photoUrl, long lastSignIn, boolean isOnline) {
+        mUid = uid;
+        mEmail = email;
+        mDisplayName = displayName;
+        mPhotoUrl = photoUrl;
+        mLastSignIn = lastSignIn;
+        mIsOnline = isOnline;
+    }
+
+    public User(FirebaseUser firebaseUser) {
+        mUid = firebaseUser.getUid();
+        mEmail = firebaseUser.getEmail();
+        mDisplayName = firebaseUser.getDisplayName();
+        mPhotoUrl = String.valueOf(firebaseUser.getPhotoUrl());
+        mLastSignIn = Calendar.getInstance().getTimeInMillis();
+        mIsOnline = true;
     }
 
     public User(FirebaseUser user, boolean isOnline) {
@@ -41,7 +50,8 @@ public class User implements Parcelable {
         mLastSignIn = user.getMetadata().getLastSignInTimestamp();
         mIsOnline = isOnline;
     }
-    public User(Parcel in){
+
+    public User(Parcel in) {
         mUid = in.readString();
         mEmail = in.readString();
         mDisplayName = in.readString();
@@ -74,6 +84,7 @@ public class User implements Parcelable {
         dest.writeString(mPhotoUrl);
         dest.writeLong(mLastSignIn);
     }
+
     public String getUid() {
         return mUid;
     }
@@ -132,5 +143,6 @@ public class User implements Parcelable {
 
     public class UserKey {
         public static final String USER_REFERENCE = "user";
+        public static final String DISPLAY_NAME = "displayName";
     }
 }

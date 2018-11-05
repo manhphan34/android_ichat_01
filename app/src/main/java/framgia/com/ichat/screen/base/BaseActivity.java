@@ -36,6 +36,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             mProgressDialog = new ProgressDialog(this);
             mProgressDialog.setMessage(getString(R.string.progress_loading));
             mProgressDialog.setIndeterminate(true);
+            mProgressDialog.setCanceledOnTouchOutside(false);
         }
         if (!mProgressDialog.isShowing()) {
             mProgressDialog.show();

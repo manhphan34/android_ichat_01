@@ -10,7 +10,7 @@
     <string name="login_text_view_register_title">New account ? Register</string>
     <string name="registration_name_hint">Name</string>
     <string name="action_sign_up">sign up</string>
-    <string name="progress_loading">Loading...</string>
+    <string name="progress_loading">Loading…</string>
     <string name="error_required">Required.</string>
     <string name="display_last_message_of_user">Sed ut perspiciatis, unde omnis iste natus error sit voluptatem accusantium dolorem..</string>
     <string name="display_name_user">Display name user</string>
@@ -25,6 +25,14 @@
     <string name="profile_button_edit">Update info</string>
     <string name="profile_button_sign_out">Sign out</string>
     <string name="profile_last_signed_in">Last signed in:</string>
+    <string name="profile_text_full_name">Full name :</string>
+    <string name="profile_text_image">Image :</string>
+    <string name="profile_full_name_hint">Input your full name</string>
+    <string name="dialog_profile_button_gallery_title">Gallery</string>
+    <string name="dialog_profile_button_camera_title">Camera</string>
+    <string name="dialog_profile_button_update_title">Update</string>
+    <string name="dialog_text_header_title">Update Information</string>
+    <string name="profile_permission_error">You must grant permission for this action</string>
     <string-array name="title_tab_home">
         <item>Private</item>
         <item>Online</item>
