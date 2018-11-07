@@ -9,7 +9,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.List;
 
-import framgia.com.ichat.data.model.PrivateRoom;
+import framgia.com.ichat.data.model.Room;
 import framgia.com.ichat.data.repository.PrivateRoomRepository;
 
 public class PrivateRoomPresenter implements PrivateRoomContract.Presenter {
@@ -45,11 +45,11 @@ public class PrivateRoomPresenter implements PrivateRoomContract.Presenter {
         mRepository.getPrivateRooms(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                List<PrivateRoom> privateRooms = new ArrayList<>();
+                List<Room> rooms = new ArrayList<>();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    privateRooms.add(snapshot.getValue(PrivateRoom.class));
+                    rooms.add(snapshot.getValue(Room.class));
                 }
-                mView.onGetListPrivateRoomSuccess(privateRooms);
+                mView.onGetListPrivateRoomSuccess(rooms);
             }
 
             @Override

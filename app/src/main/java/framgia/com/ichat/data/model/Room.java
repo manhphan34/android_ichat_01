@@ -2,19 +2,19 @@ package framgia.com.ichat.data.model;
 
 import java.util.HashMap;
 
-public class PrivateRoom {
+public class Room {
     private String mId;
     private String mName;
     private HashMap<String, Message> mMessages;
     private String mImage;
 
-    public PrivateRoom(String id, String name, HashMap<String, Message> messages) {
+    public Room(String id, String name, HashMap<String, Message> messages) {
         mId = id;
         mName = name;
         mMessages = messages;
     }
 
-    public PrivateRoom() {
+    public Room() {
     }
 
     public String getId() {
