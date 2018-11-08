@@ -35,6 +35,7 @@ public class ChatPresenter implements ChatContract.Presenter {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     listMessage.add(snapshot.getValue(Message.class));
                 }
+                mView.onGetDataSuccess(listMessage);
             }
 
             @Override

@@ -13,6 +13,7 @@
         android:background="@drawable/back_ground_message_send"
         android:gravity="end"
         android:padding="@dimen/dp_8"
+        android:textSize="@dimen/sp_16"
         android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -25,7 +26,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp_4"
-        android:textSize="@dimen/sp_10"
+        android:textSize="@dimen/sp_12"
         app:layout_constraintBottom_toBottomOf="@+id/text_message_body"
         app:layout_constraintRight_toLeftOf="@+id/text_message_body" />
 
