@@ -10,23 +10,22 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 import framgia.com.ichat.data.model.Message;
 import framgia.com.ichat.data.model.User;
 import framgia.com.ichat.data.repository.ChatRepository;
 import framgia.com.ichat.data.repository.UserRepository;
-import framgia.com.ichat.data.source.remote.UserRemoteDataSource;
 
 public class ChatPresenter implements ChatContract.Presenter, ValueEventListener {
-    public static final String DO_NOT_NOTHING = "DO_NOT_NOTHING";
-    public static final String NAVIGATE_PROFILE = "NAVIGATE_PROFILE";
     private static final String PATTERN = "EEE, d MMM yyyy, HH:mm";
     private ChatContract.View mView;
     private ChatRepository mRepository;
     private User mUser;
     private String mRoomId;
-    private String mFlag;
+    private String mRoomType;
 
     public ChatPresenter(ChatRepository repository, String roomId) {
         mRepository = repository;
@@ -45,7 +44,18 @@ public class ChatPresenter implements ChatContract.Presenter, ValueEventListener
 
     @Override
     public void getUser(UserRepository userRepository, String id) {
-        userRepository.getUser(id, this);
+        userRepository.getUser(id, new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                mUser = dataSnapshot.getValue(User.class);
+                mView.navigateProfile(mUser);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override
@@ -54,17 +64,22 @@ public class ChatPresenter implements ChatContract.Presenter, ValueEventListener
     }
 
     @Override
-    public void sendMessage(String message) {
-        if (isEmpty(message)) {
+    public void setRoomType(String roomType) {
+        mRoomType = roomType;
+    }
+
+    @Override
+    public void sendMessage(String message, String emoji) {
+        if (isEmpty(message) && isEmpty(emoji)) {
             mView.onMessageNull();
             return;
         }
-        send(message);
+        send(message, emoji);
     }
 
     @Override
     public void addOnChildChange(String id) {
-        mRepository.addOnChildChange(id, new ChildEventListener() {
+        mRepository.addOnChildChange(id, mRoomType, new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 mView.onGetDataSuccess(dataSnapshot.getValue(Message.class));
@@ -91,20 +106,23 @@ public class ChatPresenter implements ChatContract.Presenter, ValueEventListener
     }
 
     @Override
-    public void setFlag(String flag) {
-        mFlag = flag;
+    public void getEmojis() {
+        mRepository.getEmojis(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                mView.onGetDataSuccess(getEmojis(dataSnapshot));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override
     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
         mUser = dataSnapshot.getValue(User.class);
-        switch (mFlag) {
-            case NAVIGATE_PROFILE:
-                mView.navigateProfile(mUser);
-                break;
-            case DO_NOT_NOTHING:
-                break;
-        }
     }
 
     @Override
@@ -116,22 +134,34 @@ public class ChatPresenter implements ChatContract.Presenter, ValueEventListener
         return s.isEmpty();
     }
 
-    private void send(String message) {
-        mRepository.sendMessage(FirebaseAuth.getInstance().getCurrentUser(), mRoomId,
-                initMessage(message));
+    private void send(String message, String path) {
+        mRepository.sendMessage(mRoomId, mRoomType, getMessage(message, path));
     }
 
-    private Message initMessage(String message) {
+    private Message getMessage(String message, String emoji) {
+        return initMessage(message, emoji);
+    }
+
+    private Message initMessage(String message, String emoji) {
         return new Message(
                 message,
                 getCurrentTime(),
                 mUser.getUid(),
                 mUser.getDisplayName(),
-                mUser.getPhotoUrl()
+                mUser.getPhotoUrl(),
+                emoji
         );
     }
 
     public String getCurrentTime() {
         return new SimpleDateFormat(PATTERN).format(Calendar.getInstance().getTime());
+    }
+
+    private List<String> getEmojis(DataSnapshot dataSnapshot) {
+        List<String> emojis = new ArrayList<>();
+        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+            emojis.add(snapshot.getValue().toString());
+        }
+        return emojis;
     }
 }
