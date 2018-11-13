@@ -27,17 +27,24 @@ public class ChatRepository implements ChatDataSource.Remote {
     }
 
     @Override
-    public void getMessages(String id, ValueEventListener valueEventListener) {
-        mRemote.getMessages(id, valueEventListener);
+    public void getMessages(String id, String roomType,
+                            ValueEventListener valueEventListener) {
+        mRemote.getMessages(id, roomType, valueEventListener);
     }
 
     @Override
-    public void sendMessage(FirebaseUser user, String roomId, Message message) {
-        mRemote.sendMessage(user, roomId, message);
+    public void sendMessage(String roomId, String roomType, Message message) {
+        mRemote.sendMessage(roomId, roomType, message);
     }
 
     @Override
-    public void addOnChildChange(String roomId, ChildEventListener childEventListener) {
-        mRemote.addOnChildChange(roomId, childEventListener);
+    public void addOnChildChange(String roomId, String roomType,
+                                 ChildEventListener childEventListener) {
+        mRemote.addOnChildChange(roomId, roomType, childEventListener);
+    }
+
+    @Override
+    public void getEmojis(ValueEventListener valueEventListener) {
+        mRemote.getEmojis(valueEventListener);
     }
 }

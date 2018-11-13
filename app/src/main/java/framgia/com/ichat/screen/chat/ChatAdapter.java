@@ -84,16 +84,25 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     public static class MessageSentViewHolder extends RecyclerView.ViewHolder {
         private TextView mTextMessageBody;
         private TextView mTextMessageTime;
+        private ImageView mImageEmoji;
 
         public MessageSentViewHolder(@NonNull View itemView) {
             super(itemView);
             mTextMessageBody = itemView.findViewById(R.id.text_message_body);
             mTextMessageTime = itemView.findViewById(R.id.text_message_time);
+            mImageEmoji = itemView.findViewById(R.id.image_view_emoji_send);
+            mTextMessageBody.setVisibility(View.INVISIBLE);
         }
 
         public void bindView(Context context, Message message) {
-            mTextMessageBody.setText(message.getContent());
+            if (message.getContent() != null) {
+                mTextMessageBody.setVisibility(View.VISIBLE);
+                mTextMessageBody.setText(message.getContent());
+            }
             mTextMessageTime.setText(DateTime.getTime(message.getCreated()));
+            if (message.getMessageEmoji() != null) {
+                ApplicationGlideModule.loadImage(context, message.getMessageEmoji(), mImageEmoji);
+            }
         }
     }
 
@@ -103,6 +112,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         private TextView mTextMessageName;
         private TextView mTextMessageBody;
         private TextView mTextMessageTime;
+        private ImageView mImageEmoji;
         private OnMessageItemClickListener mOnClickListener;
         private Message mMessage;
 
@@ -112,22 +122,26 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             mImageMessageProfile = itemView.findViewById(R.id.image_message_profile);
             mTextMessageName = itemView.findViewById(R.id.text_message_name);
             mTextMessageBody = itemView.findViewById(R.id.text_message_body);
+            mTextMessageBody.setVisibility(View.INVISIBLE);
             mTextMessageTime = itemView.findViewById(R.id.text_message_time);
+            mImageEmoji = itemView.findViewById(R.id.image_view_emoji_receive);
             mOnClickListener = onClickListener;
             mImageMessageProfile.setOnClickListener(this);
         }
 
         public void bindView(Context context, Message message) {
             mMessage = message;
-            mTextMessageName.setText(message.getSenderName());
+            if (message.getContent() != null) {
+                mTextMessageBody.setVisibility(View.VISIBLE);
+                mTextMessageName.setText(message.getSenderName());
+            }
             mTextMessageBody.setText(message.getContent());
             mTextMessageTime.setText(DateTime.getTime(message.getCreated()));
-            GlideApp.with(context)
-                    .load(message.getSenderImage())
-                    .override(ApplicationGlideModule.WIDTH,
-                            ApplicationGlideModule.HEIGHT)
-                    .circleCrop()
-                    .into(mImageMessageProfile);
+            ApplicationGlideModule.loadCircleImage(context, message.getSenderImage(),
+                    mImageMessageProfile);
+            if (message.getMessageEmoji() != null) {
+                ApplicationGlideModule.loadImage(context, message.getMessageEmoji(), mImageEmoji);
+            }
         }
 
         @Override
