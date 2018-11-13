@@ -72,5 +72,6 @@ public class Message {
         public static final String SENDER_IMAGE_DEFAULT = "https://www.mobafire.com/images/avatars/ashe-championship.png";
         public static final String SENDER_NAME_DEFAULT = "IChat";
         public static final String SENDER_ID_DEFAULT = "-LR5D9qxCJIo_kB13TNS";
+        public static final String ID_DEFAULT = "-LR4XSCvfyWEKYA8JiqF";
     }
 }

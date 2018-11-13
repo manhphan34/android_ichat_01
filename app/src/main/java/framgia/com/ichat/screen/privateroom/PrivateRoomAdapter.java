@@ -36,7 +36,8 @@ public class PrivateRoomAdapter extends RecyclerView.Adapter<PrivateRoomAdapter.
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        return new ViewHolder(mLayoutInflater.inflate(R.layout.item_private_room, viewGroup, false), mOnItemClickListener);
+        return new ViewHolder(mLayoutInflater.inflate(R.layout.item_private_room, viewGroup,
+                false), mOnItemClickListener);
     }
 
     @Override
@@ -50,16 +51,21 @@ public class PrivateRoomAdapter extends RecyclerView.Adapter<PrivateRoomAdapter.
     }
 
     public void addData(List<Room> rooms) {
+        if (rooms == null) {
+            return;
+        }
         mRooms.clear();
         mRooms.addAll(rooms);
         notifyDataSetChanged();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener, View.OnClickListener {
+    public static class ViewHolder extends RecyclerView.ViewHolder
+            implements View.OnLongClickListener, View.OnClickListener {
         public ImageView mImageAvatar;
         public TextView mTextName;
         public TextView mTextLastMessageOfUser;
         public OnItemClickListener mOnItemClickListener;
+        public Room mRoom;
 
         public ViewHolder(@NonNull View itemView, OnItemClickListener onItemClickListener) {
             super(itemView);
@@ -72,6 +78,7 @@ public class PrivateRoomAdapter extends RecyclerView.Adapter<PrivateRoomAdapter.
         }
 
         public void bindView(Context context, Room room) {
+            mRoom = room;
             mTextName.setText(room.getName());
             GlideApp.with(context)
                     .load(room.getImage())
@@ -84,7 +91,7 @@ public class PrivateRoomAdapter extends RecyclerView.Adapter<PrivateRoomAdapter.
         @Override
         public boolean onLongClick(View view) {
             if (mOnItemClickListener != null) {
-                mOnItemClickListener.onItemLongClick(itemView, getAdapterPosition());
+                mOnItemClickListener.onItemLongClick(mRoom.getId());
             }
             return false;
         }
@@ -92,14 +99,14 @@ public class PrivateRoomAdapter extends RecyclerView.Adapter<PrivateRoomAdapter.
         @Override
         public void onClick(View view) {
             if (mOnItemClickListener != null) {
-                mOnItemClickListener.onItemClick(itemView, getAdapterPosition());
+                mOnItemClickListener.onItemClick(mRoom.getId());
             }
         }
     }
 
     public interface OnItemClickListener {
-        void onItemClick(View itemView, int position);
+        void onItemClick(String id);
 
-        void onItemLongClick(View itemView, int position);
+        void onItemLongClick(String id);
     }
 }

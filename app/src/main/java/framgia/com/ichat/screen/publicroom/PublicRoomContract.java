@@ -1,7 +1,5 @@
 package framgia.com.ichat.screen.publicroom;
 
-import com.google.firebase.database.DatabaseError;
-
 import java.util.List;
 
 import framgia.com.ichat.data.model.Room;
@@ -12,9 +10,15 @@ public class PublicRoomContract {
         void onGetRoomsSuccess(List<Room> rooms);
 
         void onGetRoomsFailed(String message);
+
+        void onCreatePublicRoomSuccess();
+
+        void onCreatePublicRoomFailed();
     }
 
     interface Presenter extends BasePresenter<View> {
         void getPublicRooms(String id);
+
+        void createPublicRoom();
     }
 }

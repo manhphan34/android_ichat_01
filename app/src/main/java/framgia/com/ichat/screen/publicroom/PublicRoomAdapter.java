@@ -20,6 +20,7 @@ public class PublicRoomAdapter extends RecyclerView.Adapter<PublicRoomAdapter.Vi
     private Context mContext;
     private List<Room> mRooms;
     private LayoutInflater mInflater;
+    private OnItemClickListener mOnItemClickListener;
 
     public PublicRoomAdapter(Context context, List<Room> rooms) {
         mContext = context;
@@ -27,10 +28,15 @@ public class PublicRoomAdapter extends RecyclerView.Adapter<PublicRoomAdapter.Vi
         mInflater = LayoutInflater.from(mContext);
     }
 
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        mOnItemClickListener = onItemClickListener;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        return new ViewHolder(mInflater.inflate(R.layout.item_public_room, viewGroup, false));
+        return new ViewHolder(mInflater.inflate(R.layout.item_public_room, viewGroup,
+                false), mOnItemClickListener);
     }
 
     @Override
@@ -43,19 +49,34 @@ public class PublicRoomAdapter extends RecyclerView.Adapter<PublicRoomAdapter.Vi
         return mRooms != null ? mRooms.size() : 0;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public void addData(List<Room> rooms) {
+        if (rooms == null) {
+            return;
+        }
+        mRooms.clear();
+        mRooms.addAll(rooms);
+        notifyDataSetChanged();
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ImageView mImagePublicRoom;
         private TextView mTextName;
         private TextView mTextMember;
+        private OnItemClickListener mOnItemClickListener;
 
-        public ViewHolder(@NonNull View itemView) {
+        private Room mRoom;
+
+        public ViewHolder(@NonNull View itemView, OnItemClickListener onItemClickListener) {
             super(itemView);
             mImagePublicRoom = itemView.findViewById(R.id.image_public_room);
             mTextName = itemView.findViewById(R.id.text_name);
             mTextMember = itemView.findViewById(R.id.text_member);
+            mOnItemClickListener = onItemClickListener;
+            itemView.setOnClickListener(this);
         }
 
         public void bindView(Context context, Room room) {
+            mRoom = room;
             mTextName.setText(room.getName());
             mTextMember.setText(getNameMembers(context, new ArrayList<>(room.getMembers().values())));
             GlideApp.with(context)
@@ -72,13 +93,17 @@ public class PublicRoomAdapter extends RecyclerView.Adapter<PublicRoomAdapter.Vi
             }
             return stringBuilder.toString();
         }
+
+        @Override
+        public void onClick(View view) {
+            if (mOnItemClickListener != null) {
+                mOnItemClickListener.onItemClick(mRoom.getId());
+            }
+        }
+
     }
 
-    public void addData(List<Room> rooms) {
-        if (rooms != null) {
-            mRooms.clear();
-            mRooms.addAll(rooms);
-            notifyDataSetChanged();
-        }
+    public interface OnItemClickListener {
+        void onItemClick(String id);
     }
 }
