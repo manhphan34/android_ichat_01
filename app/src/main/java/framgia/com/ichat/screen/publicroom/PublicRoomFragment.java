@@ -82,6 +82,7 @@ public class PublicRoomFragment extends BaseFragment implements PublicRoomContra
 
     @Override
     public void onItemClick(String id) {
-        startActivity(ChatActivity.getChatIntent(getActivity(), id));
+        startActivity(ChatActivity.getChatIntent(
+                getActivity(), null, Room.PublicRoomKey.PUBLIC_ROOM));
     }
 }

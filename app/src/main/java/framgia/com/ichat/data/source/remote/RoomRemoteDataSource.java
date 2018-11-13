@@ -61,6 +61,18 @@ public class RoomRemoteDataSource implements RoomDataSource.Remote {
                 .addOnFailureListener(onFailureListener);
     }
 
+    @Override
+    public void renameRoom(String roomType, String id, String name,
+                           OnCompleteListener onCompleteListener,
+                           OnFailureListener onFailureListener) {
+        mDatabase.getReference(roomType)
+                .child(id)
+                .child(Room.NAME)
+                .setValue(name)
+                .addOnCompleteListener(onCompleteListener)
+                .addOnFailureListener(onFailureListener);
+    }
+
     public String getCurrentTime() {
         return new SimpleDateFormat(PATTERN).format(Calendar.getInstance().getTime());
     }

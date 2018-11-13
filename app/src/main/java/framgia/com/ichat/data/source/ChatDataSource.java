@@ -8,10 +8,14 @@ import framgia.com.ichat.data.model.Message;
 
 public interface ChatDataSource {
     interface Remote {
-        void getMessages(String id, ValueEventListener valueEventListener);
+        void getMessages(String id, String roomType,
+                         ValueEventListener valueEventListener);
 
-        void sendMessage(FirebaseUser user, String roomId, Message message);
+        void sendMessage(String roomId, String roomType, Message message);
 
-        void addOnChildChange(String roomId, ChildEventListener childEventListener);
+        void addOnChildChange(String roomId, String roomType,
+                              ChildEventListener childEventListener);
+
+        void getEmojis(ValueEventListener valueEventListener);
     }
 }

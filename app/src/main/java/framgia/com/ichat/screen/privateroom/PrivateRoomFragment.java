@@ -92,8 +92,9 @@ public class PrivateRoomFragment extends BaseFragment implements View.OnClickLis
     }
 
     @Override
-    public void onItemClick(String id) {
-        startActivity(ChatActivity.getChatIntent(getActivity(), id));
+    public void onItemClick(Room room) {
+        startActivity(ChatActivity.getChatIntent(
+                getActivity(), room, Room.PrivateRoomKey.PRIVATE_ROOM));
     }
 
     @Override
