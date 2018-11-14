@@ -46,10 +46,11 @@ public class EmojiAdapter extends RecyclerView.Adapter<EmojiAdapter.ViewHolder> 
     }
 
     public void addData(List<String> emojis) {
-        if (emojis != null && getItemCount() == 0) {
-            mEmojis.addAll(emojis);
-            notifyDataSetChanged();
+        if (getItemCount() != 0) {
+            return;
         }
+        mEmojis.addAll(emojis);
+        notifyDataSetChanged();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

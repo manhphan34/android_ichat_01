@@ -5,6 +5,7 @@ import java.util.List;
 import framgia.com.ichat.data.model.Message;
 import framgia.com.ichat.data.model.User;
 
+import framgia.com.ichat.data.repository.RoomRepository;
 import framgia.com.ichat.data.repository.UserRepository;
 import framgia.com.ichat.screen.base.BasePresenter;
 
@@ -19,6 +20,10 @@ public interface ChatContract {
         void navigateProfile(User user);
 
         String getRoomType();
+
+        void dismissDialog();
+
+        void updateActionBar(String name);
     }
 
     interface Presenter extends BasePresenter<View> {
@@ -35,5 +40,7 @@ public interface ChatContract {
         void addOnChildChange(String id);
 
         void getEmojis();
+
+        void renameRoom(String name, RoomRepository roomRepository, String roomType);
     }
 }
