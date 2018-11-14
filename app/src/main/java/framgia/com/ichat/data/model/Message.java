@@ -7,6 +7,7 @@ public class Message {
     private String mSenderId;
     private String mSenderName;
     private String mSenderImage;
+    private String mMessageEmoji;
 
     public Message(String content, String created, String senderId, String senderName, String senderImage) {
         mContent = content;
@@ -14,6 +15,16 @@ public class Message {
         mSenderId = senderId;
         mSenderName = senderName;
         mSenderImage = senderImage;
+    }
+
+    public Message(String content, String created, String senderId, String senderName,
+                   String senderImage, String messageEmoji) {
+        mContent = content;
+        mCreated = created;
+        mSenderId = senderId;
+        mSenderName = senderName;
+        mSenderImage = senderImage;
+        mMessageEmoji = messageEmoji;
     }
 
     public Message() {
@@ -66,12 +77,23 @@ public class Message {
     public void setSenderImage(String senderImage) {
         mSenderImage = senderImage;
     }
-    public class MessageKey{
+
+    public String getMessageEmoji() {
+        return mMessageEmoji;
+    }
+
+    public void setMessageEmoji(String messageEmoji) {
+        mMessageEmoji = messageEmoji;
+    }
+
+    public class MessageKey {
         public static final String MESSAGES = "messages";
         public static final String CONTENT_DEFAULT = "Invite people join chat with you!";
         public static final String SENDER_IMAGE_DEFAULT = "https://www.mobafire.com/images/avatars/ashe-championship.png";
         public static final String SENDER_NAME_DEFAULT = "IChat";
         public static final String SENDER_ID_DEFAULT = "-LR5D9qxCJIo_kB13TNS";
         public static final String ID_DEFAULT = "-LR4XSCvfyWEKYA8JiqF";
+        public static final String EMOJI = "emoji";
+        public static final String PIKATRUMP = "pikatrump";
     }
 }

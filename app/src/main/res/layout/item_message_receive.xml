@@ -30,7 +30,7 @@
 
     <TextView
         android:id="@+id/text_message_body"
-        android:layout_width="wrap_content"
+        android:layout_width="@dimen/dp_0"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_8"
         android:layout_marginTop="@dimen/dp_4"
@@ -42,7 +42,8 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintHorizontal_chainStyle="packed"
         app:layout_constraintStart_toEndOf="@+id/image_message_profile"
-        app:layout_constraintTop_toBottomOf="@+id/text_message_name" />
+        app:layout_constraintTop_toBottomOf="@+id/text_message_name"
+        app:layout_constraintWidth_default="wrap" />
 
     <TextView
         android:id="@+id/text_message_time"
@@ -64,4 +65,15 @@
         app:layout_constraintGuide_percent="0.9"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/image_view_emoji_receive"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dp_16"
+        android:contentDescription="@string/app_name"
+        app:layout_constraintEnd_toStartOf="@+id/guide_line_left"
+        app:layout_constraintHorizontal_bias="0.15"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_message_body" />
 </android.support.constraint.ConstraintLayout>

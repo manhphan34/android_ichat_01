@@ -50,6 +50,7 @@
     <string name="chat_message_hint">Reply</string>
     <string name="char_comma">,</string>
     <string name="chat_error_message_empty">The message\'s content is not empty !</string>
+    <string name="error_system_busy">The system is busy. Please try again later !</string>
     <string-array name="title_tab_home">
         <item>Private</item>
         <item>Online</item>

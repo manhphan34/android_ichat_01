@@ -31,17 +31,16 @@ public class ChatRemoteDataSource implements ChatDataSource.Remote {
     }
 
     @Override
-    public void getMessages(String id, ValueEventListener valueEventListener) {
-        mDatabase.getReference(Room.PrivateRoomKey.PRIVATE_ROOM)
+    public void getMessages(String id, String roomType, ValueEventListener valueEventListener) {
+        mDatabase.getReference(roomType)
                 .child(id).child(Message.MessageKey.MESSAGES)
                 .addValueEventListener(valueEventListener);
-
     }
 
     @Override
-    public void sendMessage(FirebaseUser user, String roomId, Message message) {
-        String id = mDatabase.getReference(Room.PrivateRoomKey.PRIVATE_ROOM).push().getKey();
-        DatabaseReference reference = mDatabase.getReference(Room.PrivateRoomKey.PRIVATE_ROOM);
+    public void sendMessage(String roomId, String roomType, Message message) {
+        String id = mDatabase.getReference(roomType).push().getKey();
+        DatabaseReference reference = mDatabase.getReference(roomType);
         reference.child(roomId)
                 .child(Message.MessageKey.MESSAGES)
                 .child(id)
@@ -49,10 +48,18 @@ public class ChatRemoteDataSource implements ChatDataSource.Remote {
     }
 
     @Override
-    public void addOnChildChange(String roomId, ChildEventListener childEventListener) {
-        DatabaseReference reference = mDatabase.getReference(Room.PrivateRoomKey.PRIVATE_ROOM);
+    public void addOnChildChange(String roomId, String roomType,
+                                 ChildEventListener childEventListener) {
+        DatabaseReference reference = mDatabase.getReference(roomType);
         reference.child(roomId)
                 .child(Message.MessageKey.MESSAGES)
                 .addChildEventListener(childEventListener);
+    }
+
+    @Override
+    public void getEmojis(ValueEventListener valueEventListener) {
+        DatabaseReference reference = mDatabase.getReference(Message.MessageKey.EMOJI);
+        reference.child(Message.MessageKey.PIKATRUMP)
+                .addValueEventListener(valueEventListener);
     }
 }

@@ -12,9 +12,15 @@ public interface ChatContract {
     interface View {
         void onGetDataSuccess(Message message);
 
+        void onGetDataSuccess(List<String> emojis);
+
         void onMessageNull();
 
         void navigateProfile(User user);
+
+        String getRoomType();
+
+        void onSystemError();
     }
 
     interface Presenter extends BasePresenter<View> {
@@ -24,10 +30,12 @@ public interface ChatContract {
 
         User getUserValue();
 
-        void sendMessage(String message);
+        void setRoomType(String roomType);
+
+        void sendMessage(String message, String emoji);
 
         void addOnChildChange(String id);
 
-        void setFlag(String flag);
+        void getEmojis();
     }
 }
