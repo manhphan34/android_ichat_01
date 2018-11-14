@@ -14,11 +14,13 @@ import java.util.List;
 
 import framgia.com.ichat.R;
 import framgia.com.ichat.data.model.Room;
-import framgia.com.ichat.data.repository.PublicRoomRepository;
-import framgia.com.ichat.data.source.remote.PublicRoomRemoteDataSource;
+import framgia.com.ichat.data.repository.RoomRepository;
+import framgia.com.ichat.data.source.remote.RoomRemoteDataSource;
 import framgia.com.ichat.screen.base.BaseFragment;
+import framgia.com.ichat.screen.chat.ChatActivity;
 
-public class PublicRoomFragment extends BaseFragment implements PublicRoomContract.View, View.OnClickListener {
+public class PublicRoomFragment extends BaseFragment implements PublicRoomContract.View,
+        View.OnClickListener, PublicRoomAdapter.OnItemClickListener {
     private static final int SPAN = 2;
     private PublicRoomContract.Presenter mPresenter;
     private PublicRoomAdapter mAdapter;
@@ -38,6 +40,7 @@ public class PublicRoomFragment extends BaseFragment implements PublicRoomContra
         getView().findViewById(R.id.fab_public_room).setOnClickListener(this);
         List<Room> rooms = new ArrayList<>();
         mAdapter = new PublicRoomAdapter(getActivity(), rooms);
+        mAdapter.setOnItemClickListener(this);
         recyclerView.setAdapter(mAdapter);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), SPAN));
     }
@@ -45,7 +48,7 @@ public class PublicRoomFragment extends BaseFragment implements PublicRoomContra
     @Override
     protected void initData(Bundle savedInstanceState) {
         mPresenter = new PublicRoomPresenter(
-                PublicRoomRepository.getInstance(PublicRoomRemoteDataSource.getInstance(
+                RoomRepository.getInstance(RoomRemoteDataSource.getInstance(
                         FirebaseDatabase.getInstance(), FirebaseAuth.getInstance())));
         mPresenter.setView(this);
         mPresenter.getPublicRooms(FirebaseAuth.getInstance().getUid());
@@ -53,7 +56,7 @@ public class PublicRoomFragment extends BaseFragment implements PublicRoomContra
 
     @Override
     public void onClick(View view) {
-
+        mPresenter.createPublicRoom();
     }
 
     @Override
@@ -64,5 +67,21 @@ public class PublicRoomFragment extends BaseFragment implements PublicRoomContra
     @Override
     public void onGetRoomsFailed(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onCreatePublicRoomSuccess() {
+        Toast.makeText(getActivity(), R.string.msg_create_private_room_success, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onCreatePublicRoomFailed() {
+        Toast.makeText(getActivity(),
+                R.string.msg_create_public_room_failed, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onItemClick(String id) {
+        startActivity(ChatActivity.getChatIntent(getActivity(), id));
     }
 }

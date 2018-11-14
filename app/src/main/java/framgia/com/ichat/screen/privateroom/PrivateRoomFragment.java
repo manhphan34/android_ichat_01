@@ -15,8 +15,8 @@ import java.util.List;
 
 import framgia.com.ichat.R;
 import framgia.com.ichat.data.model.Room;
-import framgia.com.ichat.data.repository.PrivateRoomRepository;
-import framgia.com.ichat.data.source.remote.PrivateRoomRemoteDataSource;
+import framgia.com.ichat.data.repository.RoomRepository;
+import framgia.com.ichat.data.source.remote.RoomRemoteDataSource;
 import framgia.com.ichat.screen.chat.ChatActivity;
 import framgia.com.ichat.screen.base.BaseFragment;
 
@@ -48,8 +48,9 @@ public class PrivateRoomFragment extends BaseFragment implements View.OnClickLis
 
     @Override
     protected void initData(Bundle savedInstanceState) {
-        mPresenter = new PrivateRoomPresenter(PrivateRoomRepository.getInstance
-                (PrivateRoomRemoteDataSource.getInstance(FirebaseDatabase.getInstance(), FirebaseAuth.getInstance())));
+        mPresenter = new PrivateRoomPresenter(RoomRepository.getInstance
+                (RoomRemoteDataSource.getInstance(FirebaseDatabase.getInstance(),
+                        FirebaseAuth.getInstance())));
         mPresenter.setView(this);
         mPresenter.getPrivateRooms(FirebaseAuth.getInstance().getUid());
     }
@@ -67,9 +68,7 @@ public class PrivateRoomFragment extends BaseFragment implements View.OnClickLis
 
     @Override
     public void onGetPrivateRoomsSuccess(List<Room> rooms) {
-        if (rooms != null) {
-            mAdapter.addData(rooms);
-        }
+        mAdapter.addData(rooms);
     }
 
     @Override
@@ -93,17 +92,17 @@ public class PrivateRoomFragment extends BaseFragment implements View.OnClickLis
     }
 
     @Override
-    public void onItemClick(View itemView, int position) {
-        startActivity(ChatActivity.getChatIntent(getActivity(), mRooms.get(position).getId()));
+    public void onItemClick(String id) {
+        startActivity(ChatActivity.getChatIntent(getActivity(), id));
     }
 
     @Override
-    public void onItemLongClick(View itemView, final int position) {
+    public void onItemLongClick(final String id) {
         showAlertDialog(getString(R.string.title_confirm_delete), getString(R.string.msg_delete_conversation),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        mPresenter.deletePrivateRoom(mRooms.get(position).getId());
+                        mPresenter.deletePrivateRoom(id);
                     }
                 }
         );

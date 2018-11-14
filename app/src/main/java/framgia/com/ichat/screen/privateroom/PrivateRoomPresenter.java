@@ -13,13 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import framgia.com.ichat.data.model.Room;
-import framgia.com.ichat.data.repository.PrivateRoomRepository;
+import framgia.com.ichat.data.repository.RoomRepository;
 
 public class PrivateRoomPresenter implements PrivateRoomContract.Presenter {
     private PrivateRoomContract.View mView;
-    private PrivateRoomRepository mRepository;
+    private RoomRepository mRepository;
 
-    public PrivateRoomPresenter(PrivateRoomRepository repository) {
+    public PrivateRoomPresenter(RoomRepository repository) {
         mRepository = repository;
     }
 
@@ -30,7 +30,10 @@ public class PrivateRoomPresenter implements PrivateRoomContract.Presenter {
 
     @Override
     public void createPrivateRoom() {
-        mRepository.createRoom(new OnCompleteListener() {
+
+        Room room = mRepository.initDefaultRoom(Room.PrivateRoomKey.NAME_DEFAULT,
+                Room.PrivateRoomKey.IMAGE_DEFAULT);
+        mRepository.createRoom(room, Room.PrivateRoomKey.PRIVATE_ROOM, new OnCompleteListener() {
             @Override
             public void onComplete(@NonNull Task task) {
                 if (task.isSuccessful()) {
@@ -47,13 +50,13 @@ public class PrivateRoomPresenter implements PrivateRoomContract.Presenter {
 
     @Override
     public void getPrivateRooms(final String id) {
-        mRepository.getRooms(new ValueEventListener() {
+        mRepository.getRooms(Room.PrivateRoomKey.PRIVATE_ROOM, new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 List<Room> rooms = new ArrayList<>();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Room room = snapshot.getValue(Room.class);
-                    if (room.getMembers().values().contains(id)) {
+                    if (room.getMembers().keySet().contains(id)) {
                         room.setId(snapshot.getKey());
                         rooms.add(room);
                     }
@@ -70,7 +73,7 @@ public class PrivateRoomPresenter implements PrivateRoomContract.Presenter {
 
     @Override
     public void deletePrivateRoom(String id) {
-        mRepository.deleteRoom(id,
+        mRepository.deletePrivateRoom(id,
                 new OnCompleteListener() {
                     @Override
                     public void onComplete(@NonNull Task task) {

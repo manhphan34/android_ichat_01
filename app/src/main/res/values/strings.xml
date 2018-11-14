@@ -34,6 +34,8 @@
     <string name="msg_delete_conversation_success">Delete conversation success!</string>
     <string name="msg_create_private_room_failed">Create private room failed! Please try again!!</string>
     <string name="msg_create_private_room_success">Create private room success!</string>
+    <string name="msg_create_public_room_failed">Create public room failed! Please try again!!</string>
+    <string name="msg_create_public_room_success">Create public room success!</string>
     <string name="title_confirm_delete">Confirm Delete</string>
     <string name="profile_text_full_name">Full name :</string>
     <string name="profile_text_image">Image :</string>
