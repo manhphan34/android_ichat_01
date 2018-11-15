@@ -15,9 +15,11 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 
 import framgia.com.ichat.data.model.Message;
+import framgia.com.ichat.data.model.Room;
 import framgia.com.ichat.data.model.User;
 import framgia.com.ichat.data.repository.ChatRepository;
 import framgia.com.ichat.data.repository.RoomRepository;
@@ -147,6 +149,43 @@ public class ChatPresenter implements ChatContract.Presenter, ValueEventListener
     }
 
     @Override
+    public void getUsers(UserRepository userRepository) {
+        userRepository.getUsers(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                mView.onGetUsersSuccess(getUsers(dataSnapshot));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    @Override
+    public void addMember(String roomType, RoomRepository roomRepository, User user) {
+        roomRepository.addMember(roomType, mRoomId, user,
+                new OnCompleteListener() {
+                    @Override
+                    public void onComplete(@NonNull Task task) {
+                        mView.dismissDialog();
+                        if (!task.isSuccessful()) {
+                            return;
+                        }
+                        mView.onAddMemberSuccess();
+                    }
+                },
+                new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        mView.dismissDialog();
+                        mView.onAddMemberError();
+                    }
+                });
+    }
+
+    @Override
     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
         mUser = dataSnapshot.getValue(User.class);
     }
@@ -189,5 +228,13 @@ public class ChatPresenter implements ChatContract.Presenter, ValueEventListener
             emojis.add(snapshot.getValue().toString());
         }
         return emojis;
+    }
+
+    private List<User> getUsers(DataSnapshot dataSnapshot) {
+        List<User> users = new ArrayList<>();
+        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+            users.add(snapshot.getValue(User.class));
+        }
+        return users;
     }
 }

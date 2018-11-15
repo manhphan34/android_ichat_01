@@ -99,13 +99,13 @@ public class PrivateRoomAdapter extends RecyclerView.Adapter<PrivateRoomAdapter.
         @Override
         public void onClick(View view) {
             if (mOnItemClickListener != null) {
-                mOnItemClickListener.onItemClick(mRoom);
+                mOnItemClickListener.onItemClick(mRoom.getId(), mRoom.getMembers().size());
             }
         }
     }
 
     public interface OnItemClickListener {
-        void onItemClick(Room room);
+        void onItemClick(String id, int countMember);
 
         void onItemLongClick(String id);
     }

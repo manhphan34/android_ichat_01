@@ -15,6 +15,7 @@ import java.util.List;
 import framgia.com.ichat.GlideApp;
 import framgia.com.ichat.R;
 import framgia.com.ichat.data.model.Room;
+import framgia.com.ichat.data.model.User;
 
 public class PublicRoomAdapter extends RecyclerView.Adapter<PublicRoomAdapter.ViewHolder> {
     private Context mContext;
@@ -97,13 +98,13 @@ public class PublicRoomAdapter extends RecyclerView.Adapter<PublicRoomAdapter.Vi
         @Override
         public void onClick(View view) {
             if (mOnItemClickListener != null) {
-                mOnItemClickListener.onItemClick(mRoom.getId());
+                mOnItemClickListener.onItemClick(mRoom);
             }
         }
 
     }
 
     public interface OnItemClickListener {
-        void onItemClick(String id);
+        void onItemClick(Room room);
     }
 }

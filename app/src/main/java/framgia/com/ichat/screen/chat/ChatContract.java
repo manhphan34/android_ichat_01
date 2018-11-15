@@ -1,8 +1,11 @@
 package framgia.com.ichat.screen.chat;
 
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.List;
 
 import framgia.com.ichat.data.model.Message;
+import framgia.com.ichat.data.model.Room;
 import framgia.com.ichat.data.model.User;
 
 import framgia.com.ichat.data.repository.RoomRepository;
@@ -15,6 +18,8 @@ public interface ChatContract {
 
         void onGetDataSuccess(List<String> emojis);
 
+        void onGetUsersSuccess(List<User> users);
+
         void onMessageNull();
 
         void navigateProfile(User user);
@@ -24,6 +29,14 @@ public interface ChatContract {
         void dismissDialog();
 
         void updateActionBar(String name);
+
+        void showDialogAddMember();
+
+        void onAddMemberError();
+
+        void onAddMemberSuccess();
+
+        void onAddMemberFail();
     }
 
     interface Presenter extends BasePresenter<View> {
@@ -42,5 +55,9 @@ public interface ChatContract {
         void getEmojis();
 
         void renameRoom(String name, RoomRepository roomRepository, String roomType);
+
+        void getUsers(UserRepository userRepository);
+
+        void addMember(String roomType, RoomRepository room, User user);
     }
 }

@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import framgia.com.ichat.R;
@@ -35,16 +36,18 @@ import framgia.com.ichat.data.source.remote.UserRemoteDataSource;
 import framgia.com.ichat.screen.base.BaseActivity;
 import framgia.com.ichat.data.model.Message;
 import framgia.com.ichat.data.model.User;
+import framgia.com.ichat.screen.onlineuser.OnlineUserAdapter;
 import framgia.com.ichat.screen.profile.ProfileActivity;
 
 public class ChatActivity extends BaseActivity implements ChatContract.View,
         View.OnClickListener, ChatAdapter.OnMessageItemClickListener,
-        EmojiAdapter.OnItemClickListener {
+        EmojiAdapter.OnItemClickListener, OnlineUserAdapter.OnUserItemClickListener {
     public static final double DIALOG_EMOJI_WIDTH = 0.90;
     public static final double DIALOG_EMOJI_HEIGHT = 0.90;
     public static final double DIALOG_RENAME_ROOM_WIDTH = 0.90;
     public static final double DIALOG_RENAME_ROOM_HEIGHT = 0.20;
-    public static final String EXTRA_ROOM = "EXTRA_ROOM";
+    public static final String EXTRA_ROOM_ID = "EXTRA_ROOM_ID";
+    public static final String EXTRA_ROOM_MEMBER = "EXTRA_ROOM_MEMBER";
     public static final String EXTRA_ROOM_TYPE = "EXTRA_ROOM_TYPE";
     public static final String NULL = null;
     public static final int SPAN_GRID = 3;
@@ -57,10 +60,12 @@ public class ChatActivity extends BaseActivity implements ChatContract.View,
     private Dialog mDialog;
     private EditText mEditRoomName;
     private TextView mTextRoomName;
+    private OnlineUserAdapter mUserAdapter;
 
-    public static Intent getChatIntent(Context context, Room room, String roomType) {
+    public static Intent getChatIntent(Context context, String id, int countMem, String roomType) {
         Intent intent = new Intent(context, ChatActivity.class);
-        intent.putExtra(EXTRA_ROOM, room);
+        intent.putExtra(EXTRA_ROOM_ID, id);
+        intent.putExtra(EXTRA_ROOM_MEMBER, countMem);
         intent.putExtra(EXTRA_ROOM_TYPE, roomType);
         return intent;
     }
@@ -85,13 +90,14 @@ public class ChatActivity extends BaseActivity implements ChatContract.View,
 
     @Override
     protected void initData(Bundle savedInstanceState) {
-        Room room = getIntent().getParcelableExtra(EXTRA_ROOM);
+        initDialogEmoji();
+        String id =getIntent().getParcelableExtra(EXTRA_ROOM_ID);
         mPresenter = new ChatPresenter(ChatRepository.getInstance(
                 ChatRemoteDataSource.getInstance(FirebaseDatabase.getInstance())),
-                room.getId());
+                id);
         mPresenter.setView(this);
         mPresenter.setRoomType(getRoomType());
-        mPresenter.addOnChildChange(room.getId());
+        mPresenter.addOnChildChange(id);
         mUserRepository = UserRepository.getInstance(
                 UserRemoteDataSource.getInstance(
                         FirebaseDatabase.getInstance(),
@@ -99,7 +105,7 @@ public class ChatActivity extends BaseActivity implements ChatContract.View,
                         FirebaseAuth.getInstance()
                 )
         );
-        updateActionBar(room.getName());
+      //  updateActionBar(room.getName());
     }
 
     @Override
@@ -111,13 +117,17 @@ public class ChatActivity extends BaseActivity implements ChatContract.View,
     @Override
     public void onGetDataSuccess(Message message) {
         mChatAdapter.addData(message);
-        int last = getLastPosition();
         mRecyclerView.scrollToPosition(getLastPosition());
     }
 
     @Override
     public void onGetDataSuccess(List<String> emojis) {
         mEmojiAdapter.addData(emojis);
+    }
+
+    @Override
+    public void onGetUsersSuccess(List<User> users) {
+        mUserAdapter.addData(users);
     }
 
     @Override
@@ -183,6 +193,7 @@ public class ChatActivity extends BaseActivity implements ChatContract.View,
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.add_friend:
+                showDialogAddMember();
                 break;
             case R.id.rename_room:
                 showDialogRenameRoom();
@@ -196,6 +207,46 @@ public class ChatActivity extends BaseActivity implements ChatContract.View,
         mDialog.dismiss();
         mPresenter.sendMessage(mEditTextMessage.getText().toString(), path);
     }
+
+    @Override
+    public void onUserItemClick(User user) {
+        mPresenter.addMember(getRoomType(), getRoomRepo(), user);
+    }
+
+    @Override
+    public void showDialogAddMember() {
+        mDialog = new Dialog(this);
+        mDialog.setContentView(R.layout.dialog_add_member);
+        RecyclerView recyclerView = mDialog.findViewById(R.id.recycle_member);
+        List<User> users = new ArrayList<>();
+        mUserAdapter = new OnlineUserAdapter(this, users, this);
+        resizeDialog(DIALOG_EMOJI_WIDTH, DIALOG_EMOJI_HEIGHT);
+        mPresenter.getUsers(UserRepository.getInstance(
+                UserRemoteDataSource.getInstance(
+                        FirebaseDatabase.getInstance(),
+                        FirebaseStorage.getInstance(),
+                        FirebaseAuth.getInstance()
+                )));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(mUserAdapter);
+        mDialog.show();
+    }
+
+    @Override
+    public void onAddMemberError() {
+        showToastShort(getString(R.string.chat_add_member_error));
+    }
+
+    @Override
+    public void onAddMemberSuccess() {
+        showToastShort(getString(R.string.chat_add_member_success));
+    }
+
+    @Override
+    public void onAddMemberFail() {
+        showToastShort(getString(R.string.chat_add_new_member_fail));
+    }
+
 
     private void sendMessage() {
         mPresenter.sendMessage(mEditTextMessage.getText().toString(), NULL);
@@ -251,5 +302,12 @@ public class ChatActivity extends BaseActivity implements ChatContract.View,
         p.gravity = Gravity.CENTER;
         mTextRoomName = v.findViewById(R.id.text_view_title_action_bar);
         getSupportActionBar().setCustomView(v, p);
+    }
+
+    RoomRepository getRoomRepo() {
+        return RoomRepository.getInstance(
+                RoomRemoteDataSource.getInstance(
+                        FirebaseDatabase.getInstance(),
+                        FirebaseAuth.getInstance()));
     }
 }

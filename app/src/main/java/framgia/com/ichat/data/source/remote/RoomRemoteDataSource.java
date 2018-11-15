@@ -2,7 +2,9 @@ package framgia.com.ichat.data.source.remote;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
@@ -12,6 +14,7 @@ import java.util.HashMap;
 
 import framgia.com.ichat.data.model.Message;
 import framgia.com.ichat.data.model.Room;
+import framgia.com.ichat.data.model.User;
 import framgia.com.ichat.data.source.RoomDataSource;
 
 public class RoomRemoteDataSource implements RoomDataSource.Remote {
@@ -69,6 +72,19 @@ public class RoomRemoteDataSource implements RoomDataSource.Remote {
                 .child(id)
                 .child(Room.NAME)
                 .setValue(name)
+                .addOnCompleteListener(onCompleteListener)
+                .addOnFailureListener(onFailureListener);
+    }
+
+    @Override
+    public void addMember(String roomType, String roomId, User user,
+                          OnCompleteListener onCompleteListener,
+                          OnFailureListener onFailureListener) {
+        mDatabase.getReference(roomType)
+                .child(roomId)
+                .child(Room.MEMBERS)
+                .child(user.getUid())
+                .setValue(user.getDisplayName())
                 .addOnCompleteListener(onCompleteListener)
                 .addOnFailureListener(onFailureListener);
     }
