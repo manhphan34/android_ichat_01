@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@android:color/white"
-    android:paddingTop="@dimen/dp_8">
+    android:paddingTop="@dimen/dp_8"
+    android:paddingBottom="@dimen/dp_4">
 
     <ImageView
         android:id="@+id/image_message_profile"
@@ -71,9 +72,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_16"
+        android:layout_marginLeft="@dimen/dp_8"
         android:contentDescription="@string/app_name"
-        app:layout_constraintEnd_toStartOf="@+id/guide_line_left"
         app:layout_constraintHorizontal_bias="0.15"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_message_body" />
+        app:layout_constraintStart_toEndOf="@id/image_message_profile"
+        app:layout_constraintTop_toBottomOf="@+id/text_message_name" />
 </android.support.constraint.ConstraintLayout>

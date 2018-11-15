@@ -5,6 +5,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.database.ValueEventListener;
 
 import framgia.com.ichat.data.model.Room;
+import framgia.com.ichat.data.model.User;
 
 public interface RoomDataSource {
     interface Remote {
@@ -23,5 +24,9 @@ public interface RoomDataSource {
         void renameRoom(String roomType, String id, String name,
                         OnCompleteListener onCompleteListener,
                         OnFailureListener onFailureListener);
+
+        void addMember(String roomType, String roomId, User user,
+                       OnCompleteListener onCompleteListener,
+                       OnFailureListener onFailureListener);
     }
 }

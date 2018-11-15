@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 public class Room implements Parcelable {
     public static final String NAME = "name";
+    public static final String MEMBERS = "members";
     private String mId;
     private String mName;
     private HashMap<String, Message> mMessages;

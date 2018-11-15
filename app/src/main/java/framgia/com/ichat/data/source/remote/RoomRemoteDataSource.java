@@ -12,6 +12,7 @@ import java.util.HashMap;
 
 import framgia.com.ichat.data.model.Message;
 import framgia.com.ichat.data.model.Room;
+import framgia.com.ichat.data.model.User;
 import framgia.com.ichat.data.source.RoomDataSource;
 
 public class RoomRemoteDataSource implements RoomDataSource.Remote {
@@ -69,6 +70,19 @@ public class RoomRemoteDataSource implements RoomDataSource.Remote {
                 .child(id)
                 .child(Room.NAME)
                 .setValue(name)
+                .addOnCompleteListener(onCompleteListener)
+                .addOnFailureListener(onFailureListener);
+    }
+
+    @Override
+    public void addMember(String roomType, String roomId, User user,
+                          OnCompleteListener onCompleteListener,
+                          OnFailureListener onFailureListener) {
+        mDatabase.getReference(roomType)
+                .child(roomId)
+                .child(Room.MEMBERS)
+                .child(user.getUid())
+                .setValue(user.getDisplayName())
                 .addOnCompleteListener(onCompleteListener)
                 .addOnFailureListener(onFailureListener);
     }

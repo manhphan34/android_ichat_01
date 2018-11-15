@@ -35,7 +35,7 @@ public class OnlineUserPresenter implements OnlineUserContract.Presenter, ValueE
         List users = new ArrayList<User>();
         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
             User user = snapshot.getValue(User.class);
-            if (!user.isOnline()) {
+            if (user.isOnline()) {
                 users.add(user);
             }
         }

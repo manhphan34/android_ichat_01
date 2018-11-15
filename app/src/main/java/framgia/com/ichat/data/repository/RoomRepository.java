@@ -5,6 +5,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.database.ValueEventListener;
 
 import framgia.com.ichat.data.model.Room;
+import framgia.com.ichat.data.model.User;
 import framgia.com.ichat.data.source.RoomDataSource;
 
 public class RoomRepository implements RoomDataSource.Remote {
@@ -56,5 +57,12 @@ public class RoomRepository implements RoomDataSource.Remote {
                            OnCompleteListener onCompleteListener,
                            OnFailureListener onFailureListener) {
         mRemote.renameRoom(roomType, id, name, onCompleteListener, onFailureListener);
+    }
+
+    @Override
+    public void addMember(String roomType, String roomId, User user,
+                          OnCompleteListener onCompleteListener,
+                          OnFailureListener onFailureListener) {
+        mRemote.addMember(roomType, roomId, user, onCompleteListener, onFailureListener);
     }
 }

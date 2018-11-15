@@ -1,5 +1,7 @@
 package framgia.com.ichat.screen.chat;
 
+import android.icu.lang.UScript;
+
 import java.util.List;
 
 import framgia.com.ichat.data.model.Message;
@@ -15,6 +17,8 @@ public interface ChatContract {
 
         void onGetDataSuccess(List<String> emojis);
 
+        void onGetUserSuccess(List<User> users);
+
         void onMessageNull();
 
         void navigateProfile(User user);
@@ -28,6 +32,10 @@ public interface ChatContract {
         void dismissDialog();
 
         void updateActionBar(String name);
+
+        void onAddMemberSuccess();
+
+        void onAddMemberFail();
     }
 
     interface Presenter extends BasePresenter<View> {
@@ -46,5 +54,9 @@ public interface ChatContract {
         void getEmojis();
 
         void renameRoom(String name, String roomType);
+
+        void getUsers();
+
+        void addMember(String roomType, User user);
     }
 }

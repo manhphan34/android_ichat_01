@@ -28,14 +28,16 @@ public class ChatPresenter implements ChatContract.Presenter, ValueEventListener
     private ChatContract.View mView;
     private ChatRepository mChatRepository;
     private RoomRepository mRoomRepository;
+    private UserRepository mUserRepository;
     private User mUser;
     private String mRoomId;
     private String mRoomType;
 
     public ChatPresenter(ChatRepository chatRepository, RoomRepository roomRepository,
-                         String roomId) {
+                         UserRepository userRepository, String roomId) {
         mChatRepository = chatRepository;
         mRoomRepository = roomRepository;
+        mUserRepository = userRepository;
         mRoomId = roomId;
     }
 
@@ -150,6 +152,43 @@ public class ChatPresenter implements ChatContract.Presenter, ValueEventListener
     }
 
     @Override
+    public void getUsers() {
+        mUserRepository.getUsers(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                mView.onGetUserSuccess(getUsers(dataSnapshot));
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                mView.onSystemError();
+            }
+        });
+    }
+
+    @Override
+    public void addMember(String roomType, User user) {
+        mRoomRepository.addMember(roomType, mRoomId, user,
+                new OnCompleteListener() {
+                    @Override
+                    public void onComplete(@NonNull Task task) {
+                        mView.dismissDialog();
+                        if (!task.isSuccessful()) {
+                            return;
+                        }
+                        mView.onAddMemberSuccess();
+                    }
+                },
+                new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        mView.dismissDialog();
+                        mView.onAddMemberFail();
+                    }
+                });
+    }
+
+    @Override
     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
         mUser = dataSnapshot.getValue(User.class);
     }
@@ -192,5 +231,13 @@ public class ChatPresenter implements ChatContract.Presenter, ValueEventListener
             emojis.add(snapshot.getValue().toString());
         }
         return emojis;
+    }
+
+    private List<User> getUsers(DataSnapshot dataSnapshot) {
+        List<User> users = new ArrayList<>();
+        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+            users.add(snapshot.getValue(User.class));
+        }
+        return users;
     }
 }

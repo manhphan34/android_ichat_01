@@ -3,6 +3,7 @@ package framgia.com.ichat.screen.chat;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,16 +92,28 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             mTextMessageBody = itemView.findViewById(R.id.text_message_body);
             mTextMessageTime = itemView.findViewById(R.id.text_message_time);
             mImageEmoji = itemView.findViewById(R.id.image_view_emoji_send);
-            mTextMessageBody.setVisibility(View.INVISIBLE);
         }
 
         public void bindView(Context context, Message message) {
-            if (message.getContent() != null) {
+            showMessageContent(message);
+            mTextMessageTime.setText(DateTime.getTime(message.getCreated()));
+            showEmoji(context, message);
+        }
+
+        private void showMessageContent(Message message) {
+            if (TextUtils.isEmpty(message.getContent())) {
+                mTextMessageBody.setVisibility(View.INVISIBLE);
+            } else {
                 mTextMessageBody.setVisibility(View.VISIBLE);
                 mTextMessageBody.setText(message.getContent());
             }
-            mTextMessageTime.setText(DateTime.getTime(message.getCreated()));
-            if (message.getMessageEmoji() != null) {
+        }
+
+        private void showEmoji(Context context, Message message) {
+            if (message.getMessageEmoji() == null) {
+                mImageEmoji.setVisibility(View.INVISIBLE);
+            } else {
+                mImageEmoji.setVisibility(View.VISIBLE);
                 ApplicationGlideModule.loadImage(context, message.getMessageEmoji(), mImageEmoji);
             }
         }
@@ -122,7 +135,6 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             mImageMessageProfile = itemView.findViewById(R.id.image_message_profile);
             mTextMessageName = itemView.findViewById(R.id.text_message_name);
             mTextMessageBody = itemView.findViewById(R.id.text_message_body);
-            mTextMessageBody.setVisibility(View.INVISIBLE);
             mTextMessageTime = itemView.findViewById(R.id.text_message_time);
             mImageEmoji = itemView.findViewById(R.id.image_view_emoji_receive);
             mOnClickListener = onClickListener;
@@ -131,15 +143,28 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         public void bindView(Context context, Message message) {
             mMessage = message;
-            if (message.getContent() != null) {
-                mTextMessageBody.setVisibility(View.VISIBLE);
-                mTextMessageName.setText(message.getSenderName());
-            }
+            showMessageContent(message);
             mTextMessageBody.setText(message.getContent());
             mTextMessageTime.setText(DateTime.getTime(message.getCreated()));
             ApplicationGlideModule.loadCircleImage(context, message.getSenderImage(),
                     mImageMessageProfile);
-            if (message.getMessageEmoji() != null) {
+            showEmoji(context, message);
+        }
+
+        private void showMessageContent(Message message) {
+            if (TextUtils.isEmpty(message.getContent())) {
+                mTextMessageBody.setVisibility(View.INVISIBLE);
+            } else {
+                mTextMessageBody.setVisibility(View.VISIBLE);
+                mTextMessageBody.setText(message.getContent());
+            }
+        }
+
+        private void showEmoji(Context context, Message message) {
+            if (message.getMessageEmoji() == null) {
+                mImageEmoji.setVisibility(View.INVISIBLE);
+            } else {
+                mImageEmoji.setVisibility(View.VISIBLE);
                 ApplicationGlideModule.loadImage(context, message.getMessageEmoji(), mImageEmoji);
             }
         }
