@@ -1,8 +1,12 @@
 package framgia.com.ichat.data.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.HashMap;
 
-public class Room {
+public class Room implements Parcelable {
+    public static final String NAME = "name";
     private String mId;
     private String mName;
     private HashMap<String, Message> mMessages;
@@ -17,6 +21,36 @@ public class Room {
     }
 
     public Room() {
+    }
+
+    protected Room(Parcel in) {
+        mId = in.readString();
+        mName = in.readString();
+        mImage = in.readString();
+    }
+
+    public static final Creator<Room> CREATOR = new Creator<Room>() {
+        @Override
+        public Room createFromParcel(Parcel in) {
+            return new Room(in);
+        }
+
+        @Override
+        public Room[] newArray(int size) {
+            return new Room[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mId);
+        dest.writeString(mName);
+        dest.writeString(mImage);
     }
 
     public String getId() {

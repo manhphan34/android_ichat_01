@@ -50,4 +50,11 @@ public class RoomRepository implements RoomDataSource.Remote {
                                   OnFailureListener onFailureListener) {
         mRemote.deletePrivateRoom(id, onCompleteListener, onFailureListener);
     }
+
+    @Override
+    public void renameRoom(String roomType, String id, String name,
+                           OnCompleteListener onCompleteListener,
+                           OnFailureListener onFailureListener) {
+        mRemote.renameRoom(roomType, id, name, onCompleteListener, onFailureListener);
+    }
 }
