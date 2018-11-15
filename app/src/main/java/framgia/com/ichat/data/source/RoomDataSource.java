@@ -19,5 +19,9 @@ public interface RoomDataSource {
         void deletePrivateRoom(String id,
                                OnCompleteListener onCompleteListener,
                                OnFailureListener onFailureListener);
+
+        void renameRoom(String roomType, String id, String name,
+                        OnCompleteListener onCompleteListener,
+                        OnFailureListener onFailureListener);
     }
 }

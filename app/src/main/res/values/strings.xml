@@ -51,6 +51,11 @@
     <string name="char_comma">,</string>
     <string name="chat_error_message_empty">The message\'s content is not empty !</string>
     <string name="error_system_busy">The system is busy. Please try again later !</string>
+    <string name="chat_menu_title_add_member">Add member</string>
+    <string name="chat_menu_rename_room_title">Rename room</string>
+    <string name="chat_button_edit_tiltle">Edit</string>
+    <string name="chat_room_name_hint">Room name</string>
+    <string name="room_name_error">The name\'s is not null</string>
     <string-array name="title_tab_home">
         <item>Private</item>
         <item>Online</item>

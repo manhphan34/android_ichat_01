@@ -3,6 +3,9 @@ package framgia.com.ichat.screen.chat;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -17,18 +20,22 @@ import java.util.List;
 import framgia.com.ichat.data.model.Message;
 import framgia.com.ichat.data.model.User;
 import framgia.com.ichat.data.repository.ChatRepository;
+import framgia.com.ichat.data.repository.RoomRepository;
 import framgia.com.ichat.data.repository.UserRepository;
 
 public class ChatPresenter implements ChatContract.Presenter, ValueEventListener {
     private static final String PATTERN = "EEE, d MMM yyyy, HH:mm";
     private ChatContract.View mView;
-    private ChatRepository mRepository;
+    private ChatRepository mChatRepository;
+    private RoomRepository mRoomRepository;
     private User mUser;
     private String mRoomId;
     private String mRoomType;
 
-    public ChatPresenter(ChatRepository repository, String roomId) {
-        mRepository = repository;
+    public ChatPresenter(ChatRepository chatRepository, RoomRepository roomRepository,
+                         String roomId) {
+        mChatRepository = chatRepository;
+        mRoomRepository = roomRepository;
         mRoomId = roomId;
     }
 
@@ -79,7 +86,7 @@ public class ChatPresenter implements ChatContract.Presenter, ValueEventListener
 
     @Override
     public void addOnChildChange(String id) {
-        mRepository.addOnChildChange(id, mRoomType, new ChildEventListener() {
+        mChatRepository.addOnChildChange(id, mRoomType, new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
                 mView.onGetDataSuccess(dataSnapshot.getValue(Message.class));
@@ -107,7 +114,7 @@ public class ChatPresenter implements ChatContract.Presenter, ValueEventListener
 
     @Override
     public void getEmojis() {
-        mRepository.getEmojis(new ValueEventListener() {
+        mChatRepository.getEmojis(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 mView.onGetDataSuccess(getEmojis(dataSnapshot));
@@ -121,13 +128,35 @@ public class ChatPresenter implements ChatContract.Presenter, ValueEventListener
     }
 
     @Override
+    public void renameRoom(final String name, String roomType) {
+        if (name.isEmpty()) {
+            mView.onRoomNameNull();
+            return;
+        }
+        mRoomRepository.renameRoom(roomType, mRoomId, name,
+                new OnCompleteListener() {
+                    @Override
+                    public void onComplete(@NonNull Task task) {
+                        mView.updateActionBar(name);
+                        mView.dismissDialog();
+                    }
+                },
+                new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        mView.onSystemError();
+                    }
+                });
+    }
+
+    @Override
     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
         mUser = dataSnapshot.getValue(User.class);
     }
 
     @Override
     public void onCancelled(@NonNull DatabaseError databaseError) {
-
+        mView.onSystemError();
     }
 
     private boolean isEmpty(String s) {
@@ -135,7 +164,7 @@ public class ChatPresenter implements ChatContract.Presenter, ValueEventListener
     }
 
     private void send(String message, String path) {
-        mRepository.sendMessage(mRoomId, mRoomType, getMessage(message, path));
+        mChatRepository.sendMessage(mRoomId, mRoomType, getMessage(message, path));
     }
 
     private Message getMessage(String message, String emoji) {
