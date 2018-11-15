@@ -21,6 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import framgia.com.ichat.R;
@@ -35,11 +36,12 @@ import framgia.com.ichat.data.source.remote.UserRemoteDataSource;
 import framgia.com.ichat.screen.base.BaseActivity;
 import framgia.com.ichat.data.model.Message;
 import framgia.com.ichat.data.model.User;
+import framgia.com.ichat.screen.onlineuser.OnlineUserAdapter;
 import framgia.com.ichat.screen.profile.ProfileActivity;
 
 public class ChatActivity extends BaseActivity implements ChatContract.View,
         View.OnClickListener, ChatAdapter.OnMessageItemClickListener,
-        EmojiAdapter.OnItemClickListener {
+        EmojiAdapter.OnItemClickListener, OnlineUserAdapter.OnUserItemClickListener {
     public static final double DIALOG_EMOJI_WIDTH = 0.90;
     public static final double DIALOG_EMOJI_HEIGHT = 0.90;
     public static final double DIALOG_RENAME_ROOM_WIDTH = 0.90;
@@ -57,6 +59,7 @@ public class ChatActivity extends BaseActivity implements ChatContract.View,
     private Dialog mDialog;
     private EditText mEditRoomName;
     private TextView mTextRoomName;
+    private OnlineUserAdapter mUserAdapter;
 
     public static Intent getChatIntent(Context context, Room room, String roomType) {
         Intent intent = new Intent(context, ChatActivity.class);
@@ -86,7 +89,8 @@ public class ChatActivity extends BaseActivity implements ChatContract.View,
     @Override
     protected void initData(Bundle savedInstanceState) {
         Room room = getIntent().getParcelableExtra(EXTRA_ROOM);
-        mPresenter = new ChatPresenter(getChatRepo(), getRoomRepo(), room.getId());
+        mPresenter = new ChatPresenter(getChatRepo(), getRoomRepo(),
+                getUserRepo(), room.getId());
         mPresenter.setView(this);
         mPresenter.setRoomType(getRoomType());
         mPresenter.addOnChildChange(room.getId());
@@ -115,6 +119,11 @@ public class ChatActivity extends BaseActivity implements ChatContract.View,
     @Override
     public void onGetDataSuccess(List<String> emojis) {
         mEmojiAdapter.addData(emojis);
+    }
+
+    @Override
+    public void onGetUserSuccess(List<User> users) {
+        mUserAdapter.addData(users);
     }
 
     @Override
@@ -182,6 +191,21 @@ public class ChatActivity extends BaseActivity implements ChatContract.View,
     }
 
     @Override
+    public void onUserItemClick(User user) {
+        mPresenter.addMember(getRoomType(), user);
+    }
+
+    @Override
+    public void onAddMemberSuccess() {
+        showToastShort(getString(R.string.chat_add_member_success));
+    }
+
+    @Override
+    public void onAddMemberFail() {
+        showToastShort(getString(R.string.chat_add_new_member_fail));
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_chat, menu);
         return super.onCreateOptionsMenu(menu);
@@ -191,6 +215,7 @@ public class ChatActivity extends BaseActivity implements ChatContract.View,
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.add_friend:
+                showDialogAddMember();
                 break;
             case R.id.rename_room:
                 showDialogRenameRoom();
@@ -225,6 +250,19 @@ public class ChatActivity extends BaseActivity implements ChatContract.View,
         resizeDialog(DIALOG_RENAME_ROOM_WIDTH, DIALOG_RENAME_ROOM_HEIGHT);
         mEditRoomName = mDialog.findViewById(R.id.edit_dialog_room_name);
         mDialog.findViewById(R.id.button_rename_room).setOnClickListener(this);
+        mDialog.show();
+    }
+
+    public void showDialogAddMember() {
+        mDialog = new Dialog(this);
+        mDialog.setContentView(R.layout.dialog_add_member);
+        RecyclerView recyclerView = mDialog.findViewById(R.id.recycle_member);
+        List<User> users = new ArrayList<>();
+        mUserAdapter = new OnlineUserAdapter(this, users, this);
+        resizeDialog(DIALOG_EMOJI_WIDTH, DIALOG_EMOJI_HEIGHT);
+        mPresenter.getUsers();
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(mUserAdapter);
         mDialog.show();
     }
 
@@ -266,5 +304,13 @@ public class ChatActivity extends BaseActivity implements ChatContract.View,
     private ChatRepository getChatRepo() {
         return ChatRepository.getInstance(
                 ChatRemoteDataSource.getInstance(FirebaseDatabase.getInstance()));
+    }
+
+    private UserRepository getUserRepo() {
+        return UserRepository.getInstance(UserRemoteDataSource.getInstance(
+                FirebaseDatabase.getInstance(),
+                FirebaseStorage.getInstance(),
+                FirebaseAuth.getInstance()
+        ));
     }
 }
