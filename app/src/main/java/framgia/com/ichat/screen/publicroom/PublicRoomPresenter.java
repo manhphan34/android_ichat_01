@@ -30,11 +30,7 @@ public class PublicRoomPresenter implements PublicRoomContract.Presenter {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 List<Room> rooms = new ArrayList<>();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Room room = snapshot.getValue(Room.class);
-                    if (room.getMembers().keySet().contains(id)) {
-                        room.setId(snapshot.getKey());
-                        rooms.add(room);
-                    }
+                    rooms.add(snapshot.getValue(Room.class));
                 }
                 mView.onGetRoomsSuccess(rooms);
             }

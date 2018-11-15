@@ -58,6 +58,7 @@
     <string name="room_name_error">The name\'s is not null</string>
     <string name="chat_add_member_success">Add new member success</string>
     <string name="chat_add_new_member_fail">Add new member fail. Please try again !</string>
+    <string name="room_exit">Quit</string>
     <string-array name="title_tab_home">
         <item>Private</item>
         <item>Online</item>

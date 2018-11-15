@@ -65,4 +65,11 @@ public class RoomRepository implements RoomDataSource.Remote {
                           OnFailureListener onFailureListener) {
         mRemote.addMember(roomType, roomId, user, onCompleteListener, onFailureListener);
     }
+
+    @Override
+    public void exitRoom(String roomType, String roomId, String userId,
+                         OnCompleteListener onCompleteListener,
+                         OnFailureListener onFailureListener) {
+        mRemote.exitRoom(roomType, roomId, userId, onCompleteListener, onFailureListener);
+    }
 }

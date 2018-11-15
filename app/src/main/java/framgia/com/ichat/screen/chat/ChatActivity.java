@@ -36,6 +36,7 @@ import framgia.com.ichat.data.source.remote.UserRemoteDataSource;
 import framgia.com.ichat.screen.base.BaseActivity;
 import framgia.com.ichat.data.model.Message;
 import framgia.com.ichat.data.model.User;
+import framgia.com.ichat.screen.home.HomeActivity;
 import framgia.com.ichat.screen.onlineuser.OnlineUserAdapter;
 import framgia.com.ichat.screen.profile.ProfileActivity;
 
@@ -206,6 +207,12 @@ public class ChatActivity extends BaseActivity implements ChatContract.View,
     }
 
     @Override
+    public void navigateHome() {
+        startActivity(new Intent(this, HomeActivity.class));
+        finish();
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_chat, menu);
         return super.onCreateOptionsMenu(menu);
@@ -219,6 +226,9 @@ public class ChatActivity extends BaseActivity implements ChatContract.View,
                 break;
             case R.id.rename_room:
                 showDialogRenameRoom();
+                break;
+            case R.id.quit_room:
+                mPresenter.exitRoom(getRoomType());
                 break;
         }
         return super.onOptionsItemSelected(item);

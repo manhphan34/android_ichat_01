@@ -28,5 +28,9 @@ public interface RoomDataSource {
         void addMember(String roomType, String roomId, User user,
                        OnCompleteListener onCompleteListener,
                        OnFailureListener onFailureListener);
+
+        void exitRoom(String roomType, String userId, String name,
+                      OnCompleteListener onCompleteListener,
+                      OnFailureListener onFailureListener);
     }
 }

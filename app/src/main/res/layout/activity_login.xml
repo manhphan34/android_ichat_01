@@ -92,26 +92,26 @@
         android:id="@+id/edit_text_left"
         android:layout_width="0dp"
         android:layout_height="@dimen/dp_1"
-        android:layout_marginTop="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_16"
         android:layout_marginEnd="@dimen/dp_8"
         android:background="@color/color_medium_blue"
         android:importantForAutofill="no"
         app:layout_constraintEnd_toStartOf="@+id/text_view"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="@+id/button_login_account"
-        app:layout_constraintTop_toBottomOf="@+id/text_view_sign_up" />
+        app:layout_constraintTop_toBottomOf="@+id/text_view_show_error" />
 
     <EditText
         android:id="@+id/edit_text_right"
         android:layout_width="@dimen/dp_0"
         android:layout_height="@dimen/dp_1"
         android:layout_marginStart="@dimen/dp_8"
-        android:layout_marginTop="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_16"
         android:background="@color/color_medium_blue"
         app:layout_constraintEnd_toStartOf="@+id/guide_line_right"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/text_view"
-        app:layout_constraintTop_toBottomOf="@+id/text_view_sign_up" />
+        app:layout_constraintTop_toBottomOf="@+id/text_view_show_error" />
 
     <com.google.android.gms.common.internal.SignInButtonImpl
         android:id="@+id/button_login_google"

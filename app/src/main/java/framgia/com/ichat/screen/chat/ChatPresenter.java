@@ -189,6 +189,26 @@ public class ChatPresenter implements ChatContract.Presenter, ValueEventListener
     }
 
     @Override
+    public void exitRoom(String roomType) {
+        mRoomRepository.exitRoom(roomType, mRoomId, mUser.getUid(),
+                new OnCompleteListener() {
+                    @Override
+                    public void onComplete(@NonNull Task task) {
+                        if (!task.isSuccessful()) {
+                            return;
+                        }
+                        mView.navigateHome();
+                    }
+                },
+                new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        mView.onSystemError();
+                    }
+                });
+    }
+
+    @Override
     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
         mUser = dataSnapshot.getValue(User.class);
     }

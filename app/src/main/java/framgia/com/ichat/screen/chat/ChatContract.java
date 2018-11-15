@@ -36,6 +36,8 @@ public interface ChatContract {
         void onAddMemberSuccess();
 
         void onAddMemberFail();
+
+        void navigateHome();
     }
 
     interface Presenter extends BasePresenter<View> {
@@ -58,5 +60,7 @@ public interface ChatContract {
         void getUsers();
 
         void addMember(String roomType, User user);
+
+        void exitRoom(String roomType);
     }
 }
