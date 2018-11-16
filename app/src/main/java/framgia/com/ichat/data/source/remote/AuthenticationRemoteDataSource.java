@@ -18,6 +18,7 @@ import java.util.Calendar;
 import framgia.com.ichat.data.model.User;
 import framgia.com.ichat.data.source.AuthenticationDataSource;
 import framgia.com.ichat.utils.Constant;
+import framgia.com.ichat.utils.DateTime;
 
 public class AuthenticationRemoteDataSource implements AuthenticationDataSource.Remote {
     private FirebaseAuth mAuth;
@@ -74,20 +75,22 @@ public class AuthenticationRemoteDataSource implements AuthenticationDataSource.
         }
     }
 
-    private void authenticateGoogleWithFireBase(GoogleSignInAccount account,
-                                                OnCompleteListener onCompleteListener,
-                                                OnFailureListener onFailureListener) {
-        AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(onCompleteListener)
-                .addOnFailureListener(onFailureListener);
-    }
-
     @Override
     public void saveUserToDatabase(FirebaseUser firebaseUser) {
         mDatabase.getReference(User.UserKey.USER_REFERENCE)
                 .child(firebaseUser.getUid())
                 .setValue(getInformationOfUser(firebaseUser));
+    }
+
+    @Override
+    public void saveUserToDatabase(FirebaseUser firebaseUser,
+                                   OnCompleteListener onCompleteListener,
+                                   OnFailureListener onFailureListener) {
+        mDatabase.getReference(User.UserKey.USER_REFERENCE)
+                .child(firebaseUser.getUid())
+                .setValue(initUser(firebaseUser))
+                .addOnCompleteListener(onCompleteListener)
+                .addOnFailureListener(onFailureListener);
     }
 
     @Override
@@ -112,5 +115,25 @@ public class AuthenticationRemoteDataSource implements AuthenticationDataSource.
         DatabaseReference reference = mDatabase.getReference(User.UserKey.USER_REFERENCE);
         reference.child(user.getUid()).child(User.UserKey.ONLINE).setValue(true);
         reference.child(user.getUid()).child(User.UserKey.LAST_SING_IN).setValue(Calendar.getInstance().getTimeInMillis());
+    }
+
+    private void authenticateGoogleWithFireBase(GoogleSignInAccount account,
+                                                OnCompleteListener onCompleteListener,
+                                                OnFailureListener onFailureListener) {
+        AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(onCompleteListener)
+                .addOnFailureListener(onFailureListener);
+    }
+
+    private User initUser(FirebaseUser user) {
+        return new User(
+                user.getUid(),
+                user.getEmail(),
+                user.getDisplayName(),
+                user.getPhotoUrl().toString(),
+                DateTime.getCurrentTime(),
+                true
+        );
     }
 }

@@ -9,6 +9,7 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 
 import framgia.com.ichat.data.model.User;
 import framgia.com.ichat.data.repository.AuthenticationRepository;
@@ -94,6 +95,7 @@ public class LoginPresenter implements LoginContract.Presenter, OnCompleteListen
 
     @Override
     public void getSignedInAccount(int requestCode, Intent data) {
+        mLoginView.showProgress();
         if (requestCode == LoginKey.RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             handleSignInWithGoogle(task);
@@ -103,7 +105,13 @@ public class LoginPresenter implements LoginContract.Presenter, OnCompleteListen
     @Override
     public void handleSignInWithGoogle(Task<GoogleSignInAccount> task) {
         try {
-            mRepository.signInWithGoogle(task.getResult(ApiException.class), this, this);
+            mRepository.signInWithGoogle(task.getResult(ApiException.class),
+                    new OnCompleteListener() {
+                        @Override
+                        public void onComplete(@NonNull Task task) {
+                            loginGoogleSuccess();
+                        }
+                    }, this);
         } catch (ApiException e) {
             mLoginView.onSystemError();
         }
@@ -130,5 +138,15 @@ public class LoginPresenter implements LoginContract.Presenter, OnCompleteListen
         }
         mRepository.changeRememberStatus(mIsRemember);
         mRepository.updateUser(mRepository.getCurrentUser());
+    }
+
+    private void loginGoogleSuccess() {
+        mRepository.saveUserToDatabase(FirebaseAuth.getInstance().getCurrentUser(),
+                new OnCompleteListener() {
+                    @Override
+                    public void onComplete(@NonNull Task task) {
+                        mLoginView.navigateHome();
+                    }
+                }, LoginPresenter.this);
     }
 }

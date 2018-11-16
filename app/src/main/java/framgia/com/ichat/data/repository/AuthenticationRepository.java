@@ -27,6 +27,7 @@ public class AuthenticationRepository implements AuthenticationDataSource.Remote
         }
         return sInstance;
     }
+
     public AuthenticationRepository(AuthenticationDataSource.Remote remote) {
         mRemote = remote;
     }
@@ -65,6 +66,13 @@ public class AuthenticationRepository implements AuthenticationDataSource.Remote
     @Override
     public void saveUserToDatabase(FirebaseUser firebaseUser) {
         mRemote.saveUserToDatabase(firebaseUser);
+    }
+
+    @Override
+    public void saveUserToDatabase(FirebaseUser firebaseUser,
+                                   OnCompleteListener onCompleteListener,
+                                   OnFailureListener onFailureListener) {
+        mRemote.saveUserToDatabase(firebaseUser, onCompleteListener, onFailureListener);
     }
 
     @Override

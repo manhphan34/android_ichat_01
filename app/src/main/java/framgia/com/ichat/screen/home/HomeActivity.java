@@ -85,7 +85,7 @@ public class HomeActivity extends BaseActivity implements
     @Override
 
     public void showImage(String uri) {
-        GlideApp.with(this)
+        GlideApp.with(getApplicationContext())
                 .load(uri)
                 .apply(new RequestOptions().override(ApplicationGlideModule.WIDTH,
                         ApplicationGlideModule.HEIGHT))

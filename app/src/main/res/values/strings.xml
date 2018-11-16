@@ -20,7 +20,7 @@
     <string name="title_search">Search</string>
     <string name="msg_create_account_success">Create account success !</string>
     <string name="msg_create_account_failed">Create account failed !</string>
-    <string name="server_client_id">795947311906-aoei6cl3lgr0k78fumujn27dmjkdusih.apps.googleusercontent.com</string>
+    <string name="server_client_id">255124022424-jba2amros7e4vcjt45rck2csneiu8udf.apps.googleusercontent.com</string>
     <string name="login_error_system">The system is busy. Please come back later !</string>
     <string name="profile_button_edit">Update info</string>
     <string name="profile_button_sign_out">Sign out</string>
